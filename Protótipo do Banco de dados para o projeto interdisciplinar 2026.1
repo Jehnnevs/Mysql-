@@ -1,0 +1,80 @@
+CREATE DATABASE monitoramento_cidadao;
+
+USE monitoramento_cidadao;
+
+CREATE TABLE endereco (
+id_endereco INT PRIMARY KEY AUTO_INCREMENT,
+numero_endereco VARCHAR (4) NOT NULL,
+rua VARCHAR (100) NOT NULL,
+bairro VARCHAR (100),
+complemento_endereco VARCHAR (45),
+cidade VARCHAR (100),
+cep CHAR (8) NOT NULL
+);
+
+CREATE TABLE usuario (
+id_usuario INT PRIMARY KEY AUTO_INCREMENT,
+nome_usuario VARCHAR (100) NOT NULL,
+contato VARCHAR (12) UNIQUE,
+email VARCHAR (100) UNIQUE NOT NULL,
+cpf VARCHAR (11) UNIQUE NOT NULL,
+senha_usuario VARCHAR (8) NOT NULL,
+fk_endereco INT,
+FOREIGN KEY (fk_endereco) REFERENCES endereco (id_endereco)
+);
+
+CREATE TABLE tipo_ocorrencia (
+Idtipo_ocorrencia INT PRIMARY KEY AUTO_INCREMENT,
+categoria VARCHAR (45) NOT NULL
+);
+
+CREATE TABLE subtipo_ocorrencia (
+id_subtipo_ocorrencia INT PRIMARY KEY AUTO_INCREMENT,
+nome_subtipo VARCHAR (45) NOT NULL,
+fktipo_ocorrencia INT,
+FOREIGN KEY (fktipo_ocorrencia) REFERENCES tipo_ocorrencia (idtipo_ocorrencia)
+);
+
+CREATE TABLE ocorrencia (
+id_ocorrencia INT PRIMARY KEY AUTO_INCREMENT, 
+descricao TEXT (1000),
+latitude DECIMAL (10,8),
+longitude DECIMAL (11,8),
+data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
+fk_subtipo_ocorrencia INT,
+FOREIGN KEY (fk_subtipo_ocorrencia) REFERENCES subtipo_ocorrencia (id_subtipo_ocorrencia)
+);
+
+CREATE TABLE chamada_emergencia (
+idchamada_emer INT PRIMARY KEY AUTO_INCREMENT,
+numero_emer INT NOT NULL
+);
+
+CREATE TABLE registro (
+id_registro INT PRIMARY KEY AUTO_INCREMENT,
+data_hora_reg TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+fk_usuario INT,
+fktipo_ocorrencia INT,
+fkchamada_emer INT,
+FOREIGN KEY (fk_usuario) REFERENCES usuario (id_usuario),
+FOREIGN KEY (fktipo_ocorrencia) REFERENCES tipo_ocorrencia (idtipo_ocorrencia),
+FOREIGN KEY (fkchamada_emer) REFERENCES chamada_emergencia (idchamada_emer)
+);
+
+CREATE TABLE administrador (
+id_admin INT PRIMARY KEY AUTO_INCREMENT, 
+nome VARCHAR (100) UNIQUE NOT NULL,
+email VARCHAR (100) UNIQUE NOT NULL,
+senha VARCHAR (8) NOT NULL
+);
+
+CREATE TABLE feed_noticias (
+id_noticia INT PRIMARY KEY AUTO_INCREMENT, 
+titulo VARCHAR (100) NOT NULL,
+conteudo TEXT (1000) NOT NULL,
+data_hora_noticia TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+fk_usuario INT,
+fk_ocorrencia INT,
+FOREIGN KEY (fk_usuario) REFERENCES usuario (id_usuario),
+FOREIGN KEY (fk_ocorrencia) REFERENCES ocorrencia (id_ocorrencia)
+);
