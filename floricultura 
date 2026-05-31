@@ -1,0 +1,58 @@
+CREATE DATABASE floricultura;
+
+USE floricultura;
+
+CREATE TABLE cliente (
+    id_cliente INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE endereco (
+    id_endereco INT PRIMARY KEY AUTO_INCREMENT,
+    cep VARCHAR(8),
+    numero VARCHAR(10),
+    fk_cliente INT,
+    FOREIGN KEY (fk_cliente) REFERENCES cliente (id_cliente)
+);
+
+CREATE TABLE telefone (
+    id_telefone INT PRIMARY KEY AUTO_INCREMENT,
+    n_tel VARCHAR(11) NOT NULL,
+    fk_cliente INT,
+    FOREIGN KEY (fk_cliente) REFERENCES cliente (id_cliente)
+);
+
+CREATE TABLE compra (
+    id_compra INT PRIMARY KEY AUTO_INCREMENT,
+    data_compra DATE NOT NULL,
+    valor_compra DECIMAL(10,2) NOT NULL,
+    fk_cliente INT,
+    FOREIGN KEY (fk_cliente) REFERENCES cliente (id_cliente)
+);
+
+CREATE TABLE tipo (
+    id_tipo INT PRIMARY KEY AUTO_INCREMENT,
+    descricao VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE produto (
+    id_produto INT PRIMARY KEY AUTO_INCREMENT,
+    nome_prod VARCHAR(50) NOT NULL,
+    fk_tipo INT,
+    FOREIGN KEY (fk_tipo) REFERENCES tipo (id_tipo)
+);
+
+CREATE TABLE item (
+    id_item INT PRIMARY KEY AUTO_INCREMENT,
+    valor_item DECIMAL(10,2) NOT NULL,
+    quantidade INT DEFAULT 1,
+    fk_produto INT,
+    fk_compra INT, 
+    FOREIGN KEY (fk_produto) REFERENCES produto (id_produto),
+    FOREIGN KEY (fk_compra) REFERENCES compra (id_compra)
+);
+
+INSERT INTO cliente (nome)
+VALUES ('Arthur'), ("Levi");
+
+INSERT INTO
