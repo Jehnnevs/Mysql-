@@ -4,7 +4,9 @@ USE floricultura;
 
 CREATE TABLE cliente (
     id_cliente INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(100) NOT NULL
+    nome VARCHAR(100) NOT NULL,
+    data_nasc DATE NOT NULL,
+idade VARCHAR (3) NOT NULL
 );
 
 CREATE TABLE endereco (
@@ -38,6 +40,7 @@ CREATE TABLE tipo (
 CREATE TABLE produto (
     id_produto INT PRIMARY KEY AUTO_INCREMENT,
     nome_prod VARCHAR(50) NOT NULL,
+    preco DECIMAL (10,2) NOT NULL,
     fk_tipo INT,
     FOREIGN KEY (fk_tipo) REFERENCES tipo (id_tipo)
 );
@@ -52,7 +55,57 @@ CREATE TABLE item (
     FOREIGN KEY (fk_compra) REFERENCES compra (id_compra)
 );
 
-INSERT INTO cliente (nome)
-VALUES ('Arthur'), ("Levi");
+INSERT INTO cliente (nome, data_nasc, idade)
+VALUES ('Arthur', '2003-08-18', '22'), ('Levi', '2001-09-01', '24'), ('Matheus', '1997-10-29', '28');
 
-INSERT INTO
+INSERT INTO endereco (cep, numero, fk_cliente)
+VALUES ('5559000', '120', 1), ('5554019', '119', 2);
+
+INSERT INTO telefone (n_tel, fk_cliente)
+VALUES ('81994297097', 1), ('75995270428', 2);
+
+INSERT INTO compra (data_compra, valor_compra, fk_cliente)
+VALUES ('2026-05-10', 10.50, 1), ('2026-03-22', 15.98, 2);
+
+INSERT INTO tipo (descricao)
+VALUES ('Flor'), ('Jarros potes ou vasos');
+
+INSERT INTO produto (nome_prod, preco, fk_tipo)
+VALUES ('Tulipa', 5.25, 1), ('Jarro de barro', 15.98, 2), ('Rosa branca', 6.00, 1);
+
+INSERT INTO item (valor_item, quantidade, fk_produto, fk_compra)
+VALUES (5.25, 2, 1, 1), (15.98, 1, 2, 2);
+
+UPDATE compra SET data_compra = '2026-05-17'
+WHERE id_compra = 1;
+
+DELETE FROM produto WHERE id_produto = 3;
+
+SELECT cliente.id_cliente, cliente.nome, telefone.n_tel FROM cliente
+INNER JOIN telefone
+ON cliente.id_cliente = telefone.fk_cliente
+WHERE cliente.id_cliente = 1;
+
+SELECT cliente.id_cliente, cliente.nome, compra.data_compra, compra.valor_compra FROM cliente
+INNER JOIN compra
+ON cliente.id_cliente = compra.fk_cliente
+ORDER BY compra.valor_compra ASC;
+
+SELECT id_cliente, nome, idade FROM cliente
+WHERE idade BETWEEN 25 AND 30;
+
+SELECT id_cliente, nome, idade FROM cliente
+WHERE id_cliente IN (SELECT fk_cliente FROM compra);
+
+SELECT nome_prod FROM produto
+WHERE nome_prod LIKE '%barro';
+
+SELECT fk_cliente, MAX(data_compra) FROM compra
+GROUP BY fk_cliente;
+
+SELECT id_compra, valor_compra, data_compra FROM compra
+WHERE valor_compra = (SELECT MIN(valor_compra) FROM compra);
+
+SELECT ROUND(AVG(valor_compra), 2) FROM compra;
+
+SELECT COUNT( nome) FROM cliente;
